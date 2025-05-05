@@ -20,13 +20,13 @@ def chat():
         conversation.append({"role": "user", "content": user_input})
 
         try:
-            response = openai.ChatCompletion.create(  # type: ignore
+            response = openai.chat.completions.create(  # type: ignore
                 model="gpt-3.5-turbo",  # Use "gpt-4" if you have access
                 messages=conversation,
                 temperature=0.7
             )
 
-            reply = response.choices[0].message.content.strip()
+            reply = response.choices[0].message.content.strip()  # type: ignore
             conversation.append({"role": "assistant", "content": reply})
             print(f"Chatbot: {reply}")
 
