@@ -8,7 +8,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def chat():
     print("👋 Welcome to the GPT Chatbot. Type 'exit' to quit.\n")
-    conversation = []``
+    conversation = []
 
     while True:
         user_input = input("You: ")
@@ -20,7 +20,7 @@ def chat():
         conversation.append({"role": "user", "content": user_input})
 
         try:
-            response = openai.ChatCompletion.create(
+            response = openai.ChatCompletion.create(  # type: ignore
                 model="gpt-3.5-turbo",  # Use "gpt-4" if you have access
                 messages=conversation,
                 temperature=0.7
