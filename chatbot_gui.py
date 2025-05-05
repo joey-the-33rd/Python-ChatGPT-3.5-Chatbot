@@ -15,12 +15,15 @@ engine = pyttsx3.init()
 
 # GPT Chat Function
 def get_gpt_reply(conversation):
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=conversation,
-        temperature=0.7,
-    )
-    return response['choices'][0]['message']['content'].strip()
+    try:
+        response = openai.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=conversation,
+            temperature=0.7,
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        return f"Error: {e}"
 
 # Speech Recognition
 def recognize_speech():
@@ -57,7 +60,10 @@ def send_message():
     speak(reply)
 
 def voice_input():
-    user_input = recognize_speech()
+    try:
+        user_input = recognize_speech()
+    except Exception as e:
+        user_input = f"Error recognizing speech: {e}"
     entry.delete(0, tk.END)
     entry.insert(0, user_input)
     send_message()
@@ -69,13 +75,16 @@ root.title("GPT Voice Chatbot")
 chat_log = scrolledtext.ScrolledText(root, width=60, height=20, wrap=tk.WORD)
 chat_log.pack(padx=10, pady=10)
 
-entry = tk.Entry(root, width=50)
-entry.pack(side=tk.LEFT, padx=10, pady=5)
+input_frame = tk.Frame(root)
+input_frame.pack(padx=10, pady=5, fill=tk.X)
 
-send_btn = tk.Button(root, text="Send", command=send_message)
-send_btn.pack(side=tk.LEFT)
+entry = tk.Entry(input_frame, width=50)
+entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
-voice_btn = tk.Button(root, text="🎤 Speak", command=voice_input)
-voice_btn.pack(side=tk.LEFT)
+send_btn = tk.Button(input_frame, text="Send", command=send_message)
+send_btn.pack(side=tk.LEFT, padx=(5, 0))
+
+voice_btn = tk.Button(input_frame, text="🎤 Speak", command=voice_input)
+voice_btn.pack(side=tk.LEFT, padx=(5, 0))
 
 root.mainloop()
