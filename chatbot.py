@@ -3,7 +3,7 @@ import openai
 from dotenv import load_dotenv
 
 # Load the API key from .env
-load_dotenv()
+load_dotenv()  # type: ignore
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def chat():
