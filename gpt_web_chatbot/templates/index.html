@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GPT Web Chatbot</title>
+  <script src="/static/script.js" defer></script>
+  <style>
+    body { font-family: Arial; max-width: 600px; margin: auto; padding: 1rem; }
+    .chat-box { white-space: pre-wrap; margin-bottom: 1rem; }
+    input, button { padding: 0.5rem; font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <h2>GPT Web Chatbot</h2>
+  <div id="chat" class="chat-box"></div>
+  <input type="text" id="message" placeholder="Type your message...">
+  <button onclick="sendMessage()">Send</button>
+  <button onclick="startVoice()">🎤 Speak</button>
+</body>
+</html>
