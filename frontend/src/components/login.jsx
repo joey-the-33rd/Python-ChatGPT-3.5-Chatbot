@@ -35,6 +35,12 @@ export default function Login() {
       <button className="bg-blue-500 text-white p-2 rounded" onClick={handleLogin}>
         Login
       </button>
+      <p className="mt-4 text-center">
+        Don't have an account?{" "}
+        <a href="/register" className="text-blue-600 hover:underline">
+          Register here
+        </a>
+      </p>
     </div>
   );
 }

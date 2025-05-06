@@ -11,8 +11,12 @@ export default function Register() {
       await API.post("/auth/register", form);
       alert("User registered!");
       navigate("/login");
-    } catch {
-      alert("User already exists");
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        alert("User already exists");
+      } else {
+        alert("Registration failed");
+      }
     }
   };
 
