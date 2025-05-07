@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models import db, Chat
+from gpt_web_chatbot.backend.models import db, Chat
 import openai
 import os
 
@@ -14,11 +14,20 @@ def chat():
     data = request.get_json()
     user_msg = data["message"]
 
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": user_msg}]
-    )
-    reply = response.choices[0].message.content.strip()
+    # Use openai.ChatCompletion if available, else fallback to Completion
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": user_msg}]
+        )
+        reply = response.choices[0].message.content.strip()
+    except AttributeError:
+        response = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=user_msg,
+            max_tokens=150
+        )
+        reply = response.choices[0].text.strip()
 
     new_chat = Chat(user_id=user_id, message=user_msg, reply=reply)
     db.session.add(new_chat)

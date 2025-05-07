@@ -9,9 +9,17 @@ export default function Login() {
   const handleLogin = async () => {
     try {
       const res = await API.post("/auth/login", form);
-      localStorage.setItem("token", res.data.token);
-      navigate("/");
-    } catch {
+      console.log("Login response:", res.data);
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        console.log("Token stored in localStorage:", res.data.token);
+        navigate("/");
+      } else {
+        console.error("No token received in login response");
+        alert("Login failed: No token received");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
       alert("Invalid credentials");
     }
   };
