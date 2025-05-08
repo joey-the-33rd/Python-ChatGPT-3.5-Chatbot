@@ -34,6 +34,16 @@ fail_count=0
 
 # Function to commit a group of files with a message
 commit_group() {
+  """
+    Commit a group of files with a meaningful message.
+
+    Args:
+        group_files (str): A list of files to commit.
+        message (str): The commit message.
+
+    Returns:
+        None
+    """
   local group_files="$1"
   local message="$2"
   echo "$group_files" | xargs git add
