@@ -1,52 +1,65 @@
 import os
 import openai
-import pyttsx3
-import speech_recognition as sr
+import pyttsx3  # type: ignore
+import speech_recognition as sr  # type: ignore
 from dotenv import load_dotenv
 import tkinter as tk
 from tkinter import scrolledtext
+from typing import Optional
+
 
 # Load API Key
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+
 # Initialize Text-to-Speech
-engine = pyttsx3.init()
+engine = pyttsx3.init()  # type: ignore
+
 
 # GPT Chat Function
-def get_gpt_reply(conversation):
+def get_gpt_reply(conversation: list[dict[str, str]]) -> str:
     try:
-        response = openai.chat.completions.create(
-            model="gpt-3.5-turbo", # Use "gpt-4" if you have access
-            messages=conversation,
+        response = openai.chat.completions.create(  # type: ignore[attr-defined,arg-type]
+            model="gpt-3.5-turbo",  # Use "gpt-4" if you have access
+            messages=conversation,  # type: ignore
             temperature=0.7,
         )
-        return response.choices[0].message.content.strip()
+        content: Optional[str] = response.choices[0].message.content
+        if content is None:
+            return ""
+        return content.strip()
     except Exception as e:
         return f"Error: {e}"
 
+
 # Speech Recognition
-def recognize_speech():
-    recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
+def recognize_speech() -> str:
+    recognizer = sr.Recognizer()  # type: ignore
+    with sr.Microphone() as source:  # type: ignore
         speak("Listening...")
-        audio = recognizer.listen(source, phrase_time_limit=5)
+        audio = recognizer.listen(source, phrase_time_limit=5)  # type: ignore
     try:
-        text = recognizer.recognize_google(audio)
+        text: Optional[str] = recognizer.recognize_google(audio)  # type: ignore[attr-defined]
+        if text is None:
+            return "Sorry, I didn't catch that."
         return text
-    except sr.UnknownValueError:
+    except sr.UnknownValueError:  # type: ignore
         return "Sorry, I didn't catch that."
 
+
 # Text-to-Speech
-def speak(text):
-    engine.say(text)
-    engine.runAndWait()
+def speak(text: str) -> None:
+    _ = engine.say(text)  # type: ignore
+    _ = engine.runAndWait()  # type: ignore
+
 
 # Chat Handler
-conversation = [{"role": "system", "content": "You are a helpful assistant."}]
+conversation: list[dict[str, str]] = [{"role": "system", "content": "You are a helpful assistant."}]
 
-def send_message():
-    user_input = entry.get()
+
+def send_message() -> None:
+    user_input: str = entry.get()
     if not user_input.strip():
         return
 
@@ -54,19 +67,21 @@ def send_message():
     entry.delete(0, tk.END)
     conversation.append({"role": "user", "content": user_input})
 
-    reply = get_gpt_reply(conversation)
+    reply: str = get_gpt_reply(conversation)
     conversation.append({"role": "assistant", "content": reply})
     chat_log.insert(tk.END, f"Bot: {reply}\n")
     speak(reply)
 
-def voice_input():
+
+def voice_input() -> None:
     try:
-        user_input = recognize_speech()
+        user_input: str = recognize_speech()
     except Exception as e:
         user_input = f"Error recognizing speech: {e}"
     entry.delete(0, tk.END)
     entry.insert(0, user_input)
     send_message()
+
 
 # GUI Setup
 root = tk.Tk()
