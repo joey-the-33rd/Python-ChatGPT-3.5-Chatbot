@@ -17,10 +17,24 @@ users = {}
 
 @app.route("/")
 def index():
+    """
+    Displays the chat interface for the user.
+    """
     return render_template("index.html")
 
 @app.route("/auth/register", methods=["POST"])
 def register():
+    """
+    Handles user registration.
+
+    This endpoint expects a JSON payload with the following information:
+        - username: The username to register.
+        - password: The password to register.
+
+    If the username is missing or the password is missing, returns a 400 error.
+    If the username already exists, returns a 409 error.
+    If successful, returns a 201 response with a success message.
+    """
     data = request.json
     username = data.get("username")
     password = data.get("password")
@@ -33,6 +47,17 @@ def register():
 
 @app.route("/auth/login", methods=["POST"])
 def login():
+    """
+    Handles user login.
+
+    This endpoint expects a JSON payload with the following information:
+        - username: The username to login with.
+        - password: The password to login with.
+
+    If the username or password is missing, returns a 400 error.
+    If the username/password combination is invalid, returns a 401 error.
+    If successful, returns a 200 response with a dummy token for the given username.
+    """
     data = request.json
     username = data.get("username")
     password = data.get("password")
@@ -44,6 +69,16 @@ def login():
 
 @app.route("/chat", methods=["POST"])
 def chat():
+    """
+    Handles user chat messages.
+
+    This endpoint expects a JSON payload with the following information:
+        - message: The user's chat message.
+
+    If the message is missing, returns a 400 error.
+    If the chatbot is unable to generate a response, returns a 500 error.
+    If successful, returns a 200 response with the chatbot's reply.
+    """
     if not request.json or "message" not in request.json:
         return jsonify({"reply": "Error: No message provided."})
 
